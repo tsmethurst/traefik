@@ -15,6 +15,8 @@ import (
 	"github.com/containous/traefik/types"
 	"github.com/gambol99/go-marathon"
 	"github.com/sirupsen/logrus"
+
+	"github.com/dcos/dcos-go/dcos/http/transport"
 )
 
 const (
@@ -51,7 +53,8 @@ type Provider struct {
 	Domain                    string           `description:"Default domain used" export:"true"`
 	ExposedByDefault          bool             `description:"Expose Marathon apps by default" export:"true"`
 	GroupsAsSubDomains        bool             `description:"Convert Marathon groups to subdomains" export:"true"`
-	DCOSToken                 string           `description:"DCOSToken for DCOS environment, This will override the Authorization header" export:"true"`
+	DCOSCredentialsFile       string           `description:"Path to a dc/os service credential file for fetching a dc/os token" export:"true"`
+	DCOSTokenTimeout          flaeg.Duration   `description:"Set a timeout for dc/os service account token" export:"true"`
 	MarathonLBCompatibility   bool             `description:"Add compatibility with marathon-lb labels" export:"true"`
 	FilterMarathonConstraints bool             `description:"Enable use of Marathon constraints in constraint filtering" export:"true"`
 	TLS                       *types.ClientTLS `description:"Enable TLS support" export:"true"`
@@ -98,23 +101,33 @@ func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *s
 		}
 		p.readyChecker = rc
 
-		if len(p.DCOSToken) > 0 {
-			config.DCOSToken = p.DCOSToken
-		}
 		TLSConfig, err := p.TLS.CreateTLSConfig()
 		if err != nil {
 			return err
 		}
+
+		var t http.RoundTripper
+		t = &http.Transport{
+			DialContext: (&net.Dialer{
+				KeepAlive: time.Duration(p.KeepAlive),
+				Timeout:   time.Duration(p.DialerTimeout),
+			}).DialContext,
+			ResponseHeaderTimeout: time.Duration(p.ResponseHeaderTimeout),
+			TLSHandshakeTimeout:   time.Duration(p.TLSHandshakeTimeout),
+			TLSClientConfig:       TLSConfig,
+		}
+
+		if len(p.DCOSCredentialsFile) > 0 {
+			t, err = transport.NewRoundTripper(t, transport.OptionReadIAMConfig(p.DCOSCredentialsFile), transport.OptionTokenExpire(p.DCOSTokenTimeout.Get().(time.Duration)))
+			if err != nil {
+				log.Errorf("Cannot create dc/os round tripper %+v", err)
+				return err
+			}
+
+		}
+
 		config.HTTPClient = &http.Client{
-			Transport: &http.Transport{
-				DialContext: (&net.Dialer{
-					KeepAlive: time.Duration(p.KeepAlive),
-					Timeout:   time.Duration(p.DialerTimeout),
-				}).DialContext,
-				ResponseHeaderTimeout: time.Duration(p.ResponseHeaderTimeout),
-				TLSHandshakeTimeout:   time.Duration(p.TLSHandshakeTimeout),
-				TLSClientConfig:       TLSConfig,
-			},
+			Transport: t,
 		}
 		client, err := marathon.NewClient(config)
 		if err != nil {
