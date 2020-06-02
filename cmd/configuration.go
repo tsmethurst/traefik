@@ -90,6 +90,8 @@ func NewTraefikDefaultPointersConfiguration() *TraefikConfiguration {
 	defaultMarathon.Watch = true
 	defaultMarathon.Endpoint = "http://127.0.0.1:8080"
 	defaultMarathon.ExposedByDefault = true
+	defaultMarathon.DCOSCredentialsFile = ""
+	defaultMarathon.DCOSTokenTimeout = flaeg.Duration(5 * 24 * time.Hour)
 	defaultMarathon.Constraints = types.Constraints{}
 	defaultMarathon.DialerTimeout = flaeg.Duration(5 * time.Second)
 	defaultMarathon.ResponseHeaderTimeout = flaeg.Duration(60 * time.Second)

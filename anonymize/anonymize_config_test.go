@@ -351,7 +351,7 @@ func TestDo_globalConfiguration(t *testing.T) {
 		Domain:                  "",
 		ExposedByDefault:        true,
 		GroupsAsSubDomains:      true,
-		DCOSToken:               "",
+		DCOSCredentialsFile:     "",
 		MarathonLBCompatibility: true,
 		TLS: &types.ClientTLS{
 			CA:                 "marathon CA",

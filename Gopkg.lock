@@ -477,6 +477,14 @@
   version = "v1.1.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:43e536bdac033e29d018b27b235b6fd429a0f2be6e472f1945ce29cbc94f90b6"
+  name = "github.com/dcos/dcos-go"
+  packages = ["dcos/http/transport"]
+  pruneopts = "NUT"
+  revision = "3b86d9c7fac36be9d16fc1d22e5a5dc54738aac0"
+
+[[projects]]
   digest = "1:295f7aed734ab28daff7c0df7db42bcccf7a043d4e0a5daf5768129346b25f23"
   name = "github.com/decker502/dnspod-go"
   packages = ["."]
@@ -1288,12 +1296,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
   digest = "1:ad2a63b2d6dfe7d66bf14c01f1171a3951abef6e0fb136170359c3f7c4f51615"
   name = "github.com/labbsr0x/goh"
   packages = ["gohclient"]
   pruneopts = "NUT"
-  revision = "94bcf1cb07b70b26b72ad54b2b050bcd0a66a9c8"
+  revision = "b1072e96a179ebd4e11c1a64123a43213099be81"
+  version = "v1.0.1"
 
 [[projects]]
   branch = "master"
@@ -2286,12 +2294,13 @@
   version = "v1.12.0"
 
 [[projects]]
-  digest = "1:a56dc1133e9c449d41d22ffabd6c2343cd25ab31c9cad0e74a144006810d1544"
+  digest = "1:374eeb0db486b8f7e2c7bb8391f5336c71fe9482c97b180ae14a664eba8549cb"
   name = "gopkg.in/square/go-jose.v2"
   packages = [
     ".",
     "cipher",
     "json",
+    "jwt",
   ]
   pruneopts = "NUT"
   revision = "730df5f748271903322feb182be83b43ebbbe27d"
@@ -2549,6 +2558,7 @@
     "github.com/containous/traefik-extra-service-fabric",
     "github.com/coreos/go-systemd/daemon",
     "github.com/davecgh/go-spew/spew",
+    "github.com/dcos/dcos-go/dcos/http/transport",
     "github.com/docker/docker/api/types",
     "github.com/docker/docker/api/types/container",
     "github.com/docker/docker/api/types/events",
